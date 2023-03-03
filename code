@@ -1,0 +1,213 @@
+#include <iostream>
+#include <string>
+#include <iomanip>
+#include <cstdlib>
+using namespace std;
+
+
+double get_bill();
+double calculate_tip(double bill_amount, double tip_percentage);
+bool is_int(string);
+void string_to_int(string num, int& value);
+int get_num_people();
+bool should_keep_running();
+double get_tip();
+
+// main()
+// calculates amounts and prints
+// no parameters
+// user inputs for bill, tip percentage, and number of people
+// outputs total bill, tip amount, cost per person. reruns program if user wants. returns 0 upon completion
+int main()
+{
+    bool keep_running = true;
+    while (keep_running) {
+        double bill_amount = get_bill();
+        double tip_percentage = get_tip();
+        double tip_amount = calculate_tip(bill_amount, tip_percentage);
+        double total_cost = bill_amount + tip_amount;
+        int num_people = get_num_people();
+        double cost_per_person = total_cost / num_people;
+        
+        cout << "Total bill amount: $" << fixed << setprecision(2) << bill_amount << endl;
+        cout << "Tip amount: $" << fixed << setprecision(2) << tip_amount <<" ("<<tip_percentage<<"%)"<<endl;
+        cout << "Total cost per person: $" << fixed << setprecision(2) << cost_per_person << endl;
+
+        keep_running = should_keep_running();
+    }
+
+    return 0;
+}
+
+
+
+// get_bill()
+// makes sure user input is valid (positive float)
+// no parameters
+// no pre-conditions
+// returns a double value
+double get_bill()
+{
+    double bill_amount = 0.0;
+    bool valid_input = false;
+
+    while (!valid_input)
+    {
+        cout << "Enter the bill amount: ";
+        if (!(cin >> bill_amount))
+        {
+            cout << "Invalid input! Bill amount must be a float/double!\n";
+            cin.clear();
+            cin.ignore(100, '\n');
+        }
+        else if (bill_amount <= 0.0)
+        {
+            cout << "Invalid input! Bill amount must be positive!\n";
+        }
+        else
+        {
+            valid_input = true;
+        }
+    }
+    return bill_amount;
+}
+
+// get_tip()
+// makes sure user input is valid (positive float)
+// no parameters
+// no pre-conditions
+// returns a double value
+double get_tip()
+{
+    double tip_percentage = 0.0;
+    bool valid_input = false;
+
+    while (!valid_input)
+    {
+        cout << "Enter the tip in percent (15 for 15%): ";
+        if (!(cin >> tip_percentage))
+        {
+            cout << "Invalid input! Tip percent must be a float/double!\n";
+            cin.clear();
+            cin.ignore(100, '\n');
+        }
+        else if (tip_percentage <= 0.0)
+        {
+            cout << "Invalid input! Tip percentage must be positive!\n";
+        }
+        else
+        {
+            valid_input = true;
+        }
+    }
+    return tip_percentage;
+}
+
+// calculate_tip()
+// calculates tip amount for bill and tip percentage
+// bill_amount,tip_percentage
+// funct takes 2 doubles
+// outputs one double
+double calculate_tip(double bill_amount, double tip_percentage)
+{
+    double total_tip_amount = bill_amount * (tip_percentage / 100.0);
+    return total_tip_amount;
+}
+
+// get_num_people()
+// validates number of people (must be positive int)
+// no parameters
+// no pre-conditions
+// returns int value
+int get_num_people()
+{
+    int num_people = 0;
+    while (true)
+    {
+        cout << "Enter the number of people: ";
+        string input;
+        cin >> input;
+        string_to_int(input, num_people);
+        if (num_people <= 0)
+        {
+            cout << "Invalid input! Number of people must be a positive integer.\n";
+        }
+        else
+        {
+            break;
+        }
+    }
+    return num_people;
+}
+
+// is_int()
+// Checks if string is integer
+// string num
+// takes string
+// output bool
+bool is_int(string num) {
+    int i = 0;
+    if (num[i] == '-') {
+        i++;
+        if (num[i] == '\0') {
+            return false;
+        }
+    }
+    while (num[i] != '\0') {
+        if (num[i] < 48 || num[i] > 57)
+            return false;
+        i++;
+    }
+    return true;
+}
+
+// string_to_int()
+// converts string to integer
+// string num, int& value
+// takes string
+// outputs integer
+void string_to_int(string num, int& value)
+{
+    int num_value = 0;
+    int n = num.length();
+    bool is_negative = false;
+    int start_index = 0;
+
+    if (num[0] == '-') {//skips over initial negative sign if needed
+        is_negative = true;
+        start_index = 1;
+    }
+
+    for (int i = start_index; i < n; i++){
+        if (num[i] >= '0' && num[i] <= '9'){
+            num_value = num_value * 10 + (num[i] - '0');
+        } 
+        else{
+            value = 0;
+            return;
+        }
+    }
+
+    if (is_negative){
+        num_value *= -1;
+    }
+    
+    value = num_value;
+}
+
+// should_keep_running
+// asks user if they want to calculate again
+// no parameters
+// no pre-conditions
+// returns bool
+bool should_keep_running(){
+    char input;
+    cout << "Do you want to calculate another bill? (Y/N) ";
+    cin >> input;
+    if (input == 'Y' || input == 'y'){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
